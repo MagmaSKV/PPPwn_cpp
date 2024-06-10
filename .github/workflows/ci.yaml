@@ -93,41 +93,41 @@ jobs:
           name: "${{ matrix.target }}${{ matrix.name}}"
           path: build/pppwn.tar.gz
 
-  build-windows:
-    name: "${{ matrix.arch }}-windows-gnu(win7)"
-    runs-on: windows-2019
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { arch: x86_64, msystem: MINGW64 }
-          - { arch: x86, msystem: MINGW32 }
-    env:
-      MSYSTEM: ${{ matrix.msystem }}
-      MSYS2_PATH_TYPE: inherit
-    defaults:
-      run:
-        shell: C:\shells\msys2bash.cmd {0}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependency
-        run: |
-          pacman -S --needed --noconfirm --noprogressbar \
-            ${MINGW_PACKAGE_PREFIX}-gcc \
-            ${MINGW_PACKAGE_PREFIX}-ninja unzip upx
-          wget https://github.com/xfangfang/PPPwn_cpp/releases/download/1.0.0/npcap-sdk-1.13.zip -O npcap-sdk.zip
-          unzip npcap-sdk.zip -d sdk
-
-      - name: Build
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=MinSizeRel -DPCAP_ROOT=`pwd`/sdk
-          cmake --build build -t pppwn
-          strip build/pppwn.exe
-          upx --lzma build/pppwn.exe
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.arch }}-windows-gnu(win7)
-          path:  build/pppwn.exe
+#   build-windows:
+#     name: "${{ matrix.arch }}-windows-gnu(win7)"
+#     runs-on: windows-2019
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - { arch: x86_64, msystem: MINGW64 }
+#           - { arch: x86, msystem: MINGW32 }
+#     env:
+#       MSYSTEM: ${{ matrix.msystem }}
+#       MSYS2_PATH_TYPE: inherit
+#     defaults:
+#       run:
+#         shell: C:\shells\msys2bash.cmd {0}
+#     steps:
+#       - uses: actions/checkout@v4
+# 
+#       - name: Install dependency
+#         run: |
+#           pacman -S --needed --noconfirm --noprogressbar \
+#             ${MINGW_PACKAGE_PREFIX}-gcc \
+#             ${MINGW_PACKAGE_PREFIX}-ninja unzip upx
+#           wget https://github.com/xfangfang/PPPwn_cpp/releases/download/1.0.0/npcap-sdk-1.13.zip -O npcap-sdk.zip
+#           unzip npcap-sdk.zip -d sdk
+# 
+#       - name: Build
+#         run: |
+#           cmake -B build -DCMAKE_BUILD_TYPE=MinSizeRel -DPCAP_ROOT=`pwd`/sdk
+#           cmake --build build -t pppwn
+#           strip build/pppwn.exe
+#           upx --lzma build/pppwn.exe
+# 
+#       - name: Upload dist
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: ${{ matrix.arch }}-windows-gnu(win7)
+#           path:  build/pppwn.exe
